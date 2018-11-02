@@ -11,6 +11,7 @@ const { parseOptions } = require('./utils/parser');
  * Build the site
  */
 const build = (options = {}) => {
+  
   log.info('Building site...');
   const startTime = process.hrtime();
 
@@ -30,30 +31,67 @@ const build = (options = {}) => {
 
   // read pages
   const files = glob.sync('**/*.@(md|ejs|html)', { cwd: `${srcPath}/pages` });
-  var count = 6;
   files.reverse();
+
+  //start preparing the history JSON
+  var maxPageEntries = 4;
+  var pageEntryIndex = 0;
+  var currentPage = 0;
+  var historyObj = {};
+  historyObj.pages = [];
+  var page = { 
+    "index": currentPage, 
+    "entries": []
+  };
+  historyObj.pages.push(page);
+
+  // loop through all the found files
   files.forEach(file => {
-    if(count > 0) {
-      var pageData = _buildPage(file, { srcPath, outputPath, site });
-      var linkPath = pageData.attributes.path.replaceAll('\\','/');
-      indexBody += '## [' + pageData.attributes.title + '](' + linkPath + ')\n';
-      indexBody += '### *' + pageData.attributes.date + '* \n';
-      indexBody += pageData.attributes.abstract + '\n\n';
-      indexBody += '**[Read more...](' + linkPath + ')** \n\n';
+    
+    var entryObj = {};
+    var pageData = _buildPage(file, { srcPath, outputPath, site });
+    var linkPath = pageData.attributes.path.replaceAll('\\','/');
+    
+    // var title = '<h2><a href="' + linkPath + '">' + pageData.attributes.title + '</a></h2>';
+    // var date = '<h2 style="color: gray; font-size: x-large;"><i>' + pageData.attributes.date + '</i></h2>';
+    // var body = '<p>' + pageData.attributes.abstract + '</p>';
+    // var btn = '<div class="row sqs-row"><div class="sqs-block button-block sqs-block-button" data-block-type="53" id="block-yui_3_17_2_7_1471630032837_105825"><div class="sqs-block-content"><a href="' + linkPath + '" class="sqs-block-button-element--small sqs-block-button-element abstract-block-btn" data-initialized="true">Read More →</a></div></div></div>';
+    // indexBod += '<div class="abstract-block">' + title + date + body + btn + '</div>\n\n<br><br><br>\n\n';
 
-      var title = '<h2><a href="' + linkPath + '">' + pageData.attributes.title + '</a></h2>';
-      var date = '<h2 style="color: gray; font-size: x-large;"><i>' + pageData.attributes.date + '</i></h2>';
-      var body = '<p>' + pageData.attributes.abstract + '</p>';
-      var btn = '<div class="row sqs-row"><div class="sqs-block button-block sqs-block-button" data-block-type="53" id="block-yui_3_17_2_7_1471630032837_105825"><div class="sqs-block-content"><a href="' + linkPath + '" class="sqs-block-button-element--small sqs-block-button-element abstract-block-btn" data-initialized="true">Read More →</a></div></div></div>';
+    // indexBody += '## [' + pageData.attributes.title + '](' + linkPath + ')\n';
+    // indexBody += '### *' + pageData.attributes.date + '* \n';
+    // indexBody += pageData.attributes.abstract + '\n\n';
+    // indexBody += '**[Read more...](' + linkPath + ')** \n\n';
 
-      indexBod += '<div class="abstract-block">' + title + date + body + btn + '</div>\n\n<br><br><br>\n\n';
-      count--;
+    entryObj.title = pageData.attributes.title;
+    entryObj.date = pageData.attributes.date;
+    entryObj.abstract = pageData.attributes.abstract;
+    entryObj.path = linkPath;
+    entryObj.type = (pageData.attributes.type == undefined) ? 'normal' : pageData.attributes.type;
+
+    historyObj.pages[currentPage].entries.push(entryObj);
+
+    if(pageEntryIndex < maxPageEntries) {
+      pageEntryIndex++;
+    } else {
+      currentPage++;
+      pageEntryIndex= 1;
+      var newPage = { 
+        "index": currentPage, 
+        "entries": []
+      };
+      historyObj.pages.push(newPage);
     }
   });
 
+  // save the history JSON
+  fse.writeFileSync('./public/history.js', 'const history = ' + JSON.stringify(historyObj) + ';');
+
   // build the index page
   //_buildIndexPage(indexBody, './public', site, srcPath);
-  _buildIndexPage(indexBod, './public', site, srcPath);
+  // _buildIndexPage(indexBod, './public', site, srcPath);
+  var content = '<br>';
+  _buildIndexPage(content, './public', site, srcPath);
 
   // display build time
   const timeDiff = process.hrtime(startTime);
@@ -76,6 +114,7 @@ const _loadLayout = (layout, { srcPath }) => {
   return { file, data };
 };
 
+
 /**
  * 
  * Build the index page
@@ -96,7 +135,7 @@ const _buildIndexPage = (content, outputPath, site, srcPath) => {
   });
 
   // render layout with page contents
-  const layoutName = 'default';
+  const layoutName = 'blog-index';
   const layout = _loadLayout(layoutName, {
     srcPath
   });
