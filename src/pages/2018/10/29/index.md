@@ -2,6 +2,10 @@
 title: The Measures Library
 date: October 29th, 2018
 abstract: A collection of tools and decorators used to monitor and measure performance of any typescript application.
+type: important
+tags: 
+    - typescript
+    - metrics
 ---
 
 # measures

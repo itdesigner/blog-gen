@@ -51,22 +51,12 @@ const build = (options = {}) => {
     var entryObj = {};
     var pageData = _buildPage(file, { srcPath, outputPath, site });
     var linkPath = pageData.attributes.path.replaceAll('\\','/');
-    
-    // var title = '<h2><a href="' + linkPath + '">' + pageData.attributes.title + '</a></h2>';
-    // var date = '<h2 style="color: gray; font-size: x-large;"><i>' + pageData.attributes.date + '</i></h2>';
-    // var body = '<p>' + pageData.attributes.abstract + '</p>';
-    // var btn = '<div class="row sqs-row"><div class="sqs-block button-block sqs-block-button" data-block-type="53" id="block-yui_3_17_2_7_1471630032837_105825"><div class="sqs-block-content"><a href="' + linkPath + '" class="sqs-block-button-element--small sqs-block-button-element abstract-block-btn" data-initialized="true">Read More →</a></div></div></div>';
-    // indexBod += '<div class="abstract-block">' + title + date + body + btn + '</div>\n\n<br><br><br>\n\n';
-
-    // indexBody += '## [' + pageData.attributes.title + '](' + linkPath + ')\n';
-    // indexBody += '### *' + pageData.attributes.date + '* \n';
-    // indexBody += pageData.attributes.abstract + '\n\n';
-    // indexBody += '**[Read more...](' + linkPath + ')** \n\n';
 
     entryObj.title = pageData.attributes.title;
     entryObj.date = pageData.attributes.date;
     entryObj.abstract = pageData.attributes.abstract;
     entryObj.path = linkPath;
+    entryObj.tags = pageData.attributes.tags;
     entryObj.type = (pageData.attributes.type == undefined) ? 'normal' : pageData.attributes.type;
 
     historyObj.pages[currentPage].entries.push(entryObj);
