@@ -2,6 +2,10 @@
 title: The APM Library
 date: October 27th, 2018
 abstract: A collection of tools and decorators used to monitor and measure performance of any typescript application.
+style: warning
+tags: 
+  - tools
+  - monitor
 ---
 
 ## The APM (Application Performance Management)

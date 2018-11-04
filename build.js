@@ -58,6 +58,7 @@ const build = (options = {}) => {
     entryObj.path = linkPath;
     entryObj.tags = pageData.attributes.tags;
     entryObj.type = (pageData.attributes.type == undefined) ? 'normal' : pageData.attributes.type;
+    entryObj.style = pageData.attributes.style;
 
     historyObj.pages[currentPage].entries.push(entryObj);
 
