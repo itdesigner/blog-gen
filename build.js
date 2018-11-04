@@ -125,7 +125,7 @@ const _buildIndexPage = (content, outputPath, site, srcPath) => {
   });
 
   // render layout with page contents
-  const layoutName = 'blog-index';
+  const layoutName = 'template';
   const layout = _loadLayout(layoutName, {
     srcPath
   });
