@@ -9,7 +9,8 @@ tags:
 
 # Project Title
 
-One Paragraph of project description goes here...no, really
+One Paragraph of project description goes here...no, really.
+i mean it this time.
 
 ## Getting Started
 
