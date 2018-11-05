@@ -9,7 +9,7 @@ tags:
 
 # Project Title
 
-One Paragraph of project description goes here
+One Paragraph of project description goes here...no, really
 
 ## Getting Started
 
